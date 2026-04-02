@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  
+  body {
+    @apply bg-surface-950 text-surface-100 font-sans antialiased;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(249,115,22,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(234,88,12,0.03) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-600 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-brand-500; }
+
+  /* Hide number input spinners */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface-900 border border-surface-700/50 rounded-xl;
+  }
+  
+  .card-glow {
+    @apply card shadow-glow;
+  }
+
+  .input-field {
+    @apply w-full bg-surface-900 border border-surface-700 hover:border-brand-500 rounded-lg px-3 py-2 text-sm text-surface-100 
+           placeholder-surface-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
+           transition-all duration-300 capitalize shadow-sm;
+  }
+  .input-field::placeholder {
+    @apply normal-case;
+  }
+
+  /* Improved Capitalization for data display */
+  .table td, .card, .stat-card {
+    text-transform: capitalize;
+  }
+  
+  /* Prevent capitalization for specific fields if needed */
+  .no-capitalize {
+    text-transform: none !important;
+  }
+
+  /* Modern white calendar icon for date inputs */
+  input[type="date"] {
+    @apply cursor-pointer;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(1.5);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
+  .label {
+    @apply block text-xs font-semibold text-surface-400 mb-1.5 uppercase tracking-widest;
+  }
+
+  .btn-primary {
+    @apply bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2.5 rounded-xl 
+           transition-all duration-300 text-sm flex items-center justify-center gap-2 
+           active:scale-95 shadow-lg shadow-brand-500/20;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-800 hover:bg-surface-700 border border-surface-600 text-surface-200 
+           font-semibold px-4 py-2 rounded-xl transition-all duration-300 text-sm flex items-center justify-center gap-2 active:scale-95;
+  }
+
+  .btn-danger {
+    @apply bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-500 
+           font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 text-sm flex items-center gap-1.5;
+  }
+
+  .btn-success {
+    @apply bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-500 
+           font-semibold px-3 py-1.5 rounded-lg transition-all duration-300 text-sm flex items-center gap-1.5;
+  }
+
+  .stat-card {
+    @apply card p-6 flex flex-col gap-2 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-500 cursor-default;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider;
+  }
+
+  .badge-black { @apply bg-surface-700 text-surface-300; }
+  .badge-yellow { @apply bg-yellow-400/10 text-yellow-500 border border-yellow-400/20; }
+  .badge-mixed { @apply bg-amber-400/10 text-amber-500 border border-amber-400/20; }
+  .badge-green { @apply bg-emerald-400/10 text-emerald-500 border border-emerald-400/20; }
+  .badge-red { @apply bg-red-400/10 text-red-500 border border-red-400/20; }
+  .badge-blue { @apply bg-blue-400/10 text-blue-500 border border-blue-400/20; }
+
+  .table-wrapper {
+    @apply overflow-x-auto rounded-2xl border border-surface-700/50 bg-surface-900/50 backdrop-blur-md shadow-2xl;
+  }
+
+  .table {
+    @apply w-full text-sm border-separate border-spacing-0;
+  }
+
+  .table th {
+    @apply bg-surface-800/80 text-surface-400 font-bold px-3 sm:px-6 py-4 text-left text-[10px] uppercase tracking-widest border-b border-surface-700;
+  }
+
+  .table td {
+    @apply px-3 sm:px-6 py-4 border-b border-surface-800/70 text-surface-200 text-left align-middle transition-colors duration-200;
+  }
+
+  .table tr:last-child td { @apply border-b-0; }
+  .table tbody tr { @apply hover:bg-surface-800/40; }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .modal-content {
+    @apply bg-surface-950 border border-surface-800 rounded-[2rem] w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-[0_0_100px_rgba(0,0,0,0.5)];
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .select-field {
+    @apply input-field cursor-pointer appearance-none bg-no-repeat;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 1024 1024' focusable='false' data-icon='down' width='12px' height='12px' fill='%236b7280' aria-hidden='true' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z'/%3E%3C/svg%3E");
+    background-position: right 1rem center;
+  }
+  .select-field:hover, .select-field:focus {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 1024 1024' focusable='false' data-icon='down' width='12px' height='12px' fill='%23f59e0b' aria-hidden='true' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z'/%3E%3C/svg%3E");
+  }
+
+  .page-header {
+    @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8;
+  }
+
+  .page-title {
+    @apply font-bold text-4xl text-white tracking-tight uppercase;
+  }
+
+  .section-title {
+    @apply font-bold text-surface-200 text-lg uppercase tracking-wide;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
