@@ -12,11 +12,15 @@ const today = new Date().toISOString().split('T')[0];
 const emptyForm = { date: today, vehicleId: '', driverId: '', amount: '', pumpName: '', pumpLocation: '' };
 
 export default function Diesel() {
-  const { 
-    diesel, dieselMeta, fetchDiesel, 
-    addDiesel, updateDiesel, deleteDiesel, 
-    drivers, vehicles, loading 
-  } = useStore();
+  const diesel = useStore(state => state.diesel);
+  const dieselMeta = useStore(state => state.dieselMeta);
+  const fetchDiesel = useStore(state => state.fetchDiesel);
+  const addDiesel = useStore(state => state.addDiesel);
+  const updateDiesel = useStore(state => state.updateDiesel);
+  const deleteDiesel = useStore(state => state.deleteDiesel);
+  const drivers = useStore(state => state.drivers);
+  const vehicles = useStore(state => state.vehicles);
+  const loading = useStore(state => state.loading);
 
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);

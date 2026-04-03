@@ -6,7 +6,14 @@ import { Select, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 
 export default function Reports() {
-  const { trips, diesel, drivers, vehicles, soilTypes, fetchTrips, fetchDiesel, contentLoading } = useStore();
+  const trips = useStore(state => state.trips);
+  const diesel = useStore(state => state.diesel);
+  const drivers = useStore(state => state.drivers);
+  const vehicles = useStore(state => state.vehicles);
+  const soilTypes = useStore(state => state.soilTypes);
+  const fetchTrips = useStore(state => state.fetchTrips);
+  const fetchDiesel = useStore(state => state.fetchDiesel);
+  const contentLoading = useStore(state => state.contentLoading);
   const [reportType, setReportType] = useState('daily');
   const [filter, setFilter] = useState({
     startDate: dayjs().subtract(30, 'day').format('YYYY-MM-DD'),

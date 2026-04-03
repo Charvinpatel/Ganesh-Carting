@@ -11,7 +11,7 @@ const POPULATE = [
 export const getTrips = async (req, res) => {
   try {
     const { date, vehicleId, driverId, soilTypeId, vendorId, from, to, page = 1, limit = 1000 } = req.query;
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
 
     // Exact date filter: match the entire day using $gte/$lt range
     if (date) {
@@ -45,7 +45,8 @@ export const getTrips = async (req, res) => {
       .populate(POPULATE)
       .sort({ date: -1, createdAt: -1 })
       .skip(skip)
-      .limit(limitInt);
+      .limit(limitInt)
+      .lean();
 
     res.json({
       data: trips,
@@ -101,7 +102,7 @@ export const updateTrip = async (req, res) => {
 // DELETE /api/trips/:id
 export const deleteTrip = async (req, res) => {
   try {
-    const trip = await Trip.findByIdAndDelete(req.params.id);
+    const trip = await Trip.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     if (!trip) return res.status(404).json({ message: 'Trip not found' });
     res.json({ message: 'Trip deleted successfully' });
   } catch (err) {

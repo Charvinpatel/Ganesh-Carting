@@ -13,9 +13,8 @@ const POPULATE = [
 export const getDriverTrips = async (req, res) => {
   try {
     const { status, driverId, vehicleId, soilTypeId, destination, date } = req.query;
-    console.log('[DEBUG] getDriverTrips Raw Query:', req.query);
     
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
     if (status) filter.status = status;
     if (driverId) filter.driver = driverId;
     if (vehicleId) filter.vehicle = vehicleId;
@@ -39,16 +38,12 @@ export const getDriverTrips = async (req, res) => {
       filter.driver = req.user.driverProfile;
     }
 
-    console.log('[DEBUG] getDriverTrips Final MongoDB Filter:', JSON.stringify(filter, null, 2));
-
     const trips = await DriverTrip.find(filter)
       .populate(POPULATE)
-      .sort({ date: -1, createdAt: -1 });
-      
-    console.log(`[DEBUG] getDriverTrips Returning ${trips.length} results`);
+      .sort({ date: -1, createdAt: -1 })
+      .lean();
     res.json(trips);
   } catch (err) {
-    console.error('[ERROR] getDriverTrips:', err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -119,7 +114,7 @@ export const deleteDriverTrip = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to delete this trip' });
         }
 
-        await DriverTrip.findByIdAndDelete(req.params.id);
+        await DriverTrip.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
         res.json({ message: 'Driver trip deleted successfully' });
     } catch (err) {
         res.status(500).json({ message: err.message });

@@ -2,7 +2,7 @@ import Upad from '../models/Upad.model.js';
 
 export const getAll = async (req, res) => {
   try {
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
     if (req.query.driverId) filter.driver = req.query.driverId;
     if (req.query.date) filter.date = req.query.date;
     const upads = await Upad.find(filter).populate('driver', 'name phone').sort({ date: -1, createdAt: -1 });
@@ -24,7 +24,7 @@ export const create = async (req, res) => {
 
 export const remove = async (req, res) => {
   try {
-    await Upad.findByIdAndDelete(req.params.id);
+    await Upad.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     res.json({ message: 'Deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });

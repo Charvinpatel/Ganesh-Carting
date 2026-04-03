@@ -46,7 +46,7 @@ export const getDriverReport = async (req, res) => {
     if (to)   dateFilter.$lte = to;
 
     const [drivers, trips, dieselEntries] = await Promise.all([
-      Driver.find(),
+      Driver.find({ isDeleted: { $ne: true } }),
       Trip.find(from || to ? { date: dateFilter } : {})
         .populate('vehicle',  'number type')
         .populate('soilType', 'name'),
@@ -85,7 +85,7 @@ export const getVehicleReport = async (req, res) => {
     if (to)   dateFilter.$lte = to;
 
     const [vehicles, trips, dieselEntries] = await Promise.all([
-      Vehicle.find().populate('assignedDriver', 'name'),
+      Vehicle.find({ isDeleted: { $ne: true } }).populate('assignedDriver', 'name'),
       Trip.find(from || to ? { date: dateFilter } : {})
         .populate('driver',   'name')
         .populate('soilType', 'name'),
@@ -128,7 +128,7 @@ export const getSummaryReport = async (req, res) => {
     const [trips, dieselEntries, soilTypes] = await Promise.all([
       Trip.find(query).populate('soilType', 'name color'),
       Diesel.find(query),
-      SoilType.find(), // Get all soil types for the breakdown, including soft-deleted ones
+      SoilType.find({ isDeleted: { $ne: true } }), // Get all soil types for the breakdown, including soft-deleted ones
     ]);
 
     const totalRevenue = trips.reduce((s, t) => s + t.sellPrice * t.trips, 0);

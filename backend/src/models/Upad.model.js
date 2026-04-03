@@ -6,6 +6,7 @@ const upadSchema = new mongoose.Schema({
   date:   { type: String, required: true }, // YYYY-MM-DD
   reason: { type: String, default: '' },
   givenBy: { type: String, default: 'Admin' },
+  isDeleted: { type: Boolean, default: false, index: true },
 }, { timestamps: true });
 
 export default mongoose.model('Upad', upadSchema);

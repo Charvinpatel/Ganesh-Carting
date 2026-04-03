@@ -9,7 +9,7 @@ const POPULATE = [
 export const getDiesel = async (req, res) => {
   try {
     const { date, vehicleId, from, to, page = 1, limit = 1000 } = req.query;
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
 
     if (date)      filter.date    = date;
     if (vehicleId) filter.vehicle = vehicleId;
@@ -93,7 +93,7 @@ export const updateDiesel = async (req, res) => {
 // DELETE /api/diesel/:id
 export const deleteDiesel = async (req, res) => {
   try {
-    const entry = await Diesel.findByIdAndDelete(req.params.id);
+    const entry = await Diesel.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     if (!entry) return res.status(404).json({ message: 'Diesel entry not found' });
     res.json({ message: 'Diesel entry deleted successfully' });
   } catch (err) {

@@ -73,8 +73,7 @@ async function seed() {
     { date: twoDaysAgo, vehicle: v2._id, driver: d2._id, liters: 90, amount: 8010, pumpName: 'HP Petrol Pump', pumpLocation: 'Navsari' },
   ]);
 
-  console.log('✅  Seed complete!');
-  console.log(`   Admin login: admin@transportpro.in / Admin@123`);
+  console.log('Seed complete!');
   await mongoose.disconnect();
 }
 

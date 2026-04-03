@@ -8,6 +8,7 @@ const dieselSchema = new mongoose.Schema({
   amount:       { type: Number, required: true, min: 0 },
   pumpName:     { type: String, default: '' },
   pumpLocation: { type: String, default: '' },
+  isDeleted: { type: Boolean, default: false, index: true },
 }, { timestamps: true });
 
 export default mongoose.model('Diesel', dieselSchema);

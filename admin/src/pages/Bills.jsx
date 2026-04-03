@@ -14,12 +14,16 @@ import toast from 'react-hot-toast';
 const STATUS_FILTER = ['all', 'unpaid', 'paid'];
 
 export default function Bills() {
-  const {
-    bills, fetchBills, addBill, updateBillStatus, deleteBill,
-    trips, fetchTrips,
-    driverTrips, fetchDriverTrips,
-    vendors,
-  } = useStore();
+  const bills = useStore(state => state.bills);
+  const fetchBills = useStore(state => state.fetchBills);
+  const addBill = useStore(state => state.addBill);
+  const updateBillStatus = useStore(state => state.updateBillStatus);
+  const deleteBill = useStore(state => state.deleteBill);
+  const trips = useStore(state => state.trips);
+  const fetchTrips = useStore(state => state.fetchTrips);
+  const driverTrips = useStore(state => state.driverTrips);
+  const fetchDriverTrips = useStore(state => state.fetchDriverTrips);
+  const vendors = useStore(state => state.vendors);
 
   const [statusFilter, setStatusFilter] = useState('all');
   const [modal, setModal]               = useState(false);
@@ -110,7 +114,7 @@ export default function Bills() {
 
   const handleCreate = async () => {
     if (!form.vendorName.trim()) return toast.error('Enter vendor name');
-    if (!form.selectedTripIds.length) return toast.error('Select at least one trip');
+    if (!form.selectedTripIds.length && !form.selectedDriverTripIds.length) return toast.error('Select at least one trip');
     setIsSubmitting(true);
     try {
       await addBill({
@@ -121,7 +125,7 @@ export default function Bills() {
         date:          form.date,
         notes:         form.notes,
         tripIds:       form.selectedTripIds,
-        driverTripIds: [],
+        driverTripIds: form.selectedDriverTripIds,
       });
       toast.success('Invoice created!');
       setModal(false);
@@ -369,13 +373,17 @@ export default function Bills() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-[9px] font-black text-surface-400 uppercase tracking-widest">
-                Available ({availAdmin.length})
+                Available ({totalAvail})
               </span>
               <button onClick={() => {
-                const all = form.selectedTripIds.length === availAdmin.length;
-                setForm(f => ({ ...f, selectedTripIds: all ? [] : availAdmin.map(t => t.id) }));
+                const all = form.selectedTripIds.length === availAdmin.length && form.selectedDriverTripIds.length === availDriver.length;
+                setForm(f => ({
+                  ...f,
+                  selectedTripIds: all ? [] : availAdmin.map(t => t.id),
+                  selectedDriverTripIds: all ? [] : availDriver.map(t => t.id)
+                }));
               }} className="text-[9px] font-bold text-brand-500 hover:underline uppercase">
-                {form.selectedTripIds.length === availAdmin.length && availAdmin.length > 0 ? 'Deselect All' : 'Select All'}
+                {form.selectedTripIds.length === availAdmin.length && form.selectedDriverTripIds.length === availDriver.length && totalAvail > 0 ? 'Deselect All' : 'Select All'}
               </button>
             </div>
 
@@ -389,7 +397,8 @@ export default function Bills() {
                     <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${sel ? 'bg-brand-500 border-brand-500' : 'border-surface-700'}`}>
                       {sel && <CheckCircle className="w-2.5 h-2.5 text-white" />}
                     </div>
-                    <div className="flex-1 grid grid-cols-3 gap-2 text-[10px] font-bold uppercase">
+                    <div className="flex-1 grid grid-cols-4 gap-2 text-[10px] font-bold uppercase items-center">
+                      <span className="text-surface-500">Admin</span>
                       <span>{formatDate(t.date)}</span>
                       <span className="text-center">{t.trips} trips</span>
                       <span className="text-right text-white">{formatCurrency(t.sellPrice * (t.trips || 1))}</span>
@@ -398,7 +407,26 @@ export default function Bills() {
                 );
               })}
 
-              {availAdmin.length === 0 && (
+              {availDriver.map(t => {
+                const sel = form.selectedDriverTripIds.includes(t.id);
+                return (
+                  <div key={t.id} onClick={() => toggleId('selectedDriverTripIds', t.id)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all
+                      ${sel ? 'bg-brand-500/10 border-brand-500/30 text-white' : 'bg-surface-900/50 border-surface-800 text-surface-400 hover:border-surface-700'}`}>
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${sel ? 'bg-brand-500 border-brand-500' : 'border-surface-700'}`}>
+                      {sel && <CheckCircle className="w-2.5 h-2.5 text-white" />}
+                    </div>
+                    <div className="flex-1 grid grid-cols-4 gap-2 text-[10px] font-bold uppercase items-center">
+                      <span className="text-surface-500">Driver</span>
+                      <span>{formatDate(t.date)}</span>
+                      <span className="text-center">{t.trips} trips</span>
+                      <span className="text-right text-white">—</span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {totalAvail === 0 && (
                 <div className="bg-amber-500/5 border border-amber-500/20 p-6 rounded-2xl text-center">
                   <AlertCircle className="w-6 h-6 text-amber-500 mx-auto mb-2 opacity-50" />
                   <div className="text-[9px] font-black text-amber-500 uppercase tracking-widest">No unbilled trips for this destination</div>
@@ -409,7 +437,7 @@ export default function Bills() {
 
           <div className="flex gap-3 pt-2 border-t border-surface-800">
             <button onClick={handleCreate}
-              disabled={isSubmitting || !form.selectedTripIds.length || !form.vendorName.trim()}
+              disabled={isSubmitting || (!form.selectedTripIds.length && !form.selectedDriverTripIds.length) || !form.vendorName.trim()}
               className="flex-[2] py-4 bg-brand-500 hover:bg-brand-600 disabled:opacity-30 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-brand-500/20 active:scale-95 transition-all">
               {isSubmitting ? 'Creating...' : 'Finalize Invoice'}
             </button>

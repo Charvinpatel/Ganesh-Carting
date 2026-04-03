@@ -6,7 +6,12 @@ import toast from 'react-hot-toast';
 import { Select, Modal as AntModal } from 'antd';
 
 export default function Locations() {
-  const { locations, locationsMeta, fetchLocations, addLocation, deleteLocation, loading } = useStore();
+  const locations = useStore(state => state.locations);
+  const locationsMeta = useStore(state => state.locationsMeta);
+  const fetchLocations = useStore(state => state.fetchLocations);
+  const addLocation = useStore(state => state.addLocation);
+  const deleteLocation = useStore(state => state.deleteLocation);
+  const loading = useStore(state => state.loading);
   const [formData, setFormData] = useState({ name: '', type: 'source' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   

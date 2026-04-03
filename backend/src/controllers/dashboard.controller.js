@@ -12,12 +12,12 @@ export const getDashboard = async (req, res) => {
 
     // Fetch all data in parallel
     const [allTrips, allDiesel, drivers, vehicles, soilTypes, driverTrips] = await Promise.all([
-      Trip.find().populate('driver', 'name').populate('vehicle', 'number type model').populate('soilType', 'name color'),
-      Diesel.find().populate('vehicle', 'number type').populate('driver', 'name'),
-      Driver.find(),
-      Vehicle.find().populate('assignedDriver', 'name'),
-      SoilType.find(),
-      DriverTrip.find(),
+      Trip.find({ isDeleted: { $ne: true } }).populate('driver', 'name').populate('vehicle', 'number type model').populate('soilType', 'name color'),
+      Diesel.find({ isDeleted: { $ne: true } }).populate('vehicle', 'number type').populate('driver', 'name'),
+      Driver.find({ isDeleted: { $ne: true } }),
+      Vehicle.find({ isDeleted: { $ne: true } }).populate('assignedDriver', 'name'),
+      SoilType.find({ isDeleted: { $ne: true } }),
+      DriverTrip.find({ isDeleted: { $ne: true } }),
     ]);
 
     // Today stats

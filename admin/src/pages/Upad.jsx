@@ -6,7 +6,10 @@ import { Select, DatePicker, Modal as AntModal } from 'antd';
 import dayjs from 'dayjs';
 
 export default function Upad() {
-  const { drivers, upad, addUpad, deleteUpad } = useStore();
+  const drivers = useStore(state => state.drivers);
+  const upad = useStore(state => state.upad);
+  const addUpad = useStore(state => state.addUpad);
+  const deleteUpad = useStore(state => state.deleteUpad);
   const [formData, setFormData] = useState({ driver: '', amount: '', date: new Date().toISOString().split('T')[0], reason: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 

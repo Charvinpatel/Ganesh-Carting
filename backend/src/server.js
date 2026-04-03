@@ -90,7 +90,7 @@ const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`\n🚛  TransportPro API running on http://localhost:${PORT}`);
-    console.log(`📋  Env: ${process.env.NODE_ENV}`);
+    console.log(`\nTransportPro API running on http://localhost:${PORT}`);
+    console.log(`Env: ${process.env.NODE_ENV}`);
   });
 });

@@ -9,7 +9,11 @@ import { Modal as AntModal } from 'antd';
 const empty = { name: '', buyPrice: 0, sellPrice: 0, color: '#f97316' };
 
 export default function Soil() {
-  const { soilTypes, addSoilType, updateSoilType, deleteSoilType, trips } = useStore();
+  const soilTypes = useStore(state => state.soilTypes);
+  const addSoilType = useStore(state => state.addSoilType);
+  const updateSoilType = useStore(state => state.updateSoilType);
+  const deleteSoilType = useStore(state => state.deleteSoilType);
+  const trips = useStore(state => state.trips);
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(empty);

@@ -3,7 +3,7 @@ import Location from '../models/Location.model.js';
 export const getAll = async (req, res) => {
   try {
     const { page = 1, limit = 1000, type } = req.query;
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
     if (type) filter.type = type;
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -37,7 +37,7 @@ export const create = async (req, res) => {
 
 export const remove = async (req, res) => {
   try {
-    await Location.findByIdAndDelete(req.params.id);
+    await Location.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     res.json({ message: 'Deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });

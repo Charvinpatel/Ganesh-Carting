@@ -4,7 +4,8 @@ import { Truck, Wallet, Activity, CalendarDays, TrendingUp, BarChart3 } from 'lu
 import { formatCurrency, formatDate } from '../utils/helpers';
 
 export default function DriverMonthlyDashboard() {
-  const { user, driverTrips } = useStore();
+  const user = useStore(state => state.user);
+  const driverTrips = useStore(state => state.driverTrips);
 
   const currentMonthStr = new Date().toISOString().slice(0, 7); // e.g., '2026-03'
   const currentMonthName = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });

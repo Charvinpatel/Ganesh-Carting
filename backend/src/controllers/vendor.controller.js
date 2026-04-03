@@ -2,7 +2,7 @@ import Vendor from '../models/Vendor.model.js';
 
 export const getVendors = async (req, res) => {
   try {
-    const vendors = await Vendor.find().sort({ name: 1 });
+    const vendors = await Vendor.find({ isDeleted: { $ne: true } }).sort({ name: 1 });
     res.json(vendors);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -30,7 +30,7 @@ export const updateVendor = async (req, res) => {
 
 export const deleteVendor = async (req, res) => {
   try {
-    const vendor = await Vendor.findByIdAndDelete(req.params.id);
+    const vendor = await Vendor.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     if (!vendor) return res.status(404).json({ message: 'Vendor not found' });
     res.json({ message: 'Vendor deleted successfully' });
   } catch (err) {

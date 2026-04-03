@@ -139,7 +139,6 @@ export const useStore = create((set, get) => ({
         hasInitialized: true
       });
     } catch (err) {
-      console.error('Initialization error:', err);
       // Don't set loading: false here as it's already false from checkAuth
     }
   },
@@ -453,16 +452,16 @@ export const useStore = create((set, get) => ({
   fetchDriverTrips: async (filters = {}) => {
     set({ contentLoading: true });
     try {
-      console.log('Fetching Driver Trips with filters:', filters);
+
       const res = await api.driverTrips.getAll(filters);
-      console.log('Driver Trips fetched successfully, count:', res.length);
+
       // Ensure we create a fresh array reference [...] to guarantee React re-render
       set({ 
         driverTrips: [...res.map(mapDriverTrip)],
         contentLoading: false
       });
     } catch (error) {
-      console.error('Error fetching driver trips:', error);
+
       set({ contentLoading: false });
       toast.error(`Error fetching driver trips: ${error.message}`);
     }

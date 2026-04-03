@@ -7,12 +7,20 @@ import { Select, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 
 export default function VerifyTrips() {
-  const { 
-    driverTrips, trips, fetchDriverTrips, fetchTrips, 
-    verifyDriverTrip, drivers, fetchDrivers, 
-    vehicles, fetchVehicles, soilTypes, fetchSoilTypes,
-    locations, fetchLocations, contentLoading
-  } = useStore();
+  const driverTrips = useStore(state => state.driverTrips);
+  const trips = useStore(state => state.trips);
+  const fetchDriverTrips = useStore(state => state.fetchDriverTrips);
+  const fetchTrips = useStore(state => state.fetchTrips);
+  const verifyDriverTrip = useStore(state => state.verifyDriverTrip);
+  const drivers = useStore(state => state.drivers);
+  const fetchDrivers = useStore(state => state.fetchDrivers);
+  const vehicles = useStore(state => state.vehicles);
+  const fetchVehicles = useStore(state => state.fetchVehicles);
+  const soilTypes = useStore(state => state.soilTypes);
+  const fetchSoilTypes = useStore(state => state.fetchSoilTypes);
+  const locations = useStore(state => state.locations);
+  const fetchLocations = useStore(state => state.fetchLocations);
+  const contentLoading = useStore(state => state.contentLoading);
   
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState({ 
@@ -35,7 +43,6 @@ export default function VerifyTrips() {
         driverId: filter.driverId,
       };
       
-      console.log('VerifyTrips: Loading data with filters:', filters);
       
       const promises = [
         fetchDriverTrips(filters),
@@ -50,7 +57,6 @@ export default function VerifyTrips() {
       }
 
       await Promise.all(promises);
-      console.log('VerifyTrips: Data load completed');
     } finally {
       setLoading(false);
     }
@@ -169,7 +175,6 @@ export default function VerifyTrips() {
                   placeholder="FLEET"
                   value={filter.vehicleId || undefined}
                   onChange={val => {
-                    console.log('[DEBUG] Selected Vehicle ID:', val);
                     setFilter({...filter, vehicleId: val || ''});
                   }}
                   options={vehicles.map(v => ({ label: v.number, value: v.id }))}
@@ -253,7 +258,7 @@ export default function VerifyTrips() {
                   // Compare using strings to avoid type mismatch
                   if (filter.vehicleId && String(t.vehicleId) !== String(filter.vehicleId)) {
                      // The backend SHOULD have filtered this, so if this triggers, there's a sync issue
-                     console.warn(`[DEBUG] Row ${t.id} vehicle mismatch! DB: ${t.vehicleId}, Filter: ${filter.vehicleId}`);
+
                      return null; // Don't show if it doesn't match filter (fallback)
                   }
 

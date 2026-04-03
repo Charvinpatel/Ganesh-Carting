@@ -6,7 +6,7 @@ import Trip from '../models/Trip.model.js';
 export const getDrivers = async (req, res) => {
   try {
     const { search, page = 1, limit = 1000 } = req.query;
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -78,7 +78,7 @@ export const updateDriver = async (req, res) => {
 // DELETE /api/drivers/:id
 export const deleteDriver = async (req, res) => {
   try {
-    const driver = await Driver.findByIdAndDelete(req.params.id);
+    const driver = await Driver.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     if (!driver) return res.status(404).json({ message: 'Driver not found' });
     res.json({ message: 'Driver deleted successfully' });
   } catch (err) {

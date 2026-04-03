@@ -4,9 +4,10 @@ import DriverTrip from '../models/DriverTrip.model.js';
 
 export const getBills = async (req, res) => {
   try {
-    const bills = await Bill.find()
+    const bills = await Bill.find({ isDeleted: { $ne: true } })
       .populate('vendor', 'name')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(bills);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -72,7 +73,7 @@ export const updateBillStatus = async (req, res) => {
 
 export const deleteBill = async (req, res) => {
   try {
-    const bill = await Bill.findByIdAndDelete(req.params.id);
+    const bill = await Bill.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     if (!bill) return res.status(404).json({ message: 'Bill not found' });
     res.json({ message: 'Bill deleted successfully' });
   } catch (err) {

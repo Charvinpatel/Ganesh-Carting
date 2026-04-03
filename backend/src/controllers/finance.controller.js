@@ -15,9 +15,9 @@ export const getFinanceSummary = async (req, res) => {
     const [trips, dieselEntries, soilTypes, vehicles, drivers] = await Promise.all([
       Trip.find({ date: { $gte: from } }).populate('soilType', 'name').populate('vehicle', 'number type').populate('driver', 'name'),
       Diesel.find({ date: { $gte: from } }).populate('vehicle', 'number'),
-      SoilType.find(),
-      Vehicle.find().populate('assignedDriver', 'name'),
-      Driver.find(),
+      SoilType.find({ isDeleted: { $ne: true } }),
+      Vehicle.find({ isDeleted: { $ne: true } }).populate('assignedDriver', 'name'),
+      Driver.find({ isDeleted: { $ne: true } }),
     ]);
 
     const totalRevenue = trips.reduce((s, t) => s + t.sellPrice * t.trips, 0);

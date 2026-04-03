@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const tripSchema = new mongoose.Schema({
-  date:        { type: String, required: true },  // YYYY-MM-DD
+  date:        { type: String, required: true, index: true },  // YYYY-MM-DD
   driver:      { type: mongoose.Schema.Types.ObjectId, ref: 'Driver',   required: true },
   vehicle:     { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle',  required: true },
   soilType:    { type: mongoose.Schema.Types.ObjectId, ref: 'SoilType', required: true },
@@ -12,6 +12,7 @@ const tripSchema = new mongoose.Schema({
   buyPrice:    { type: Number, required: true, min: 0 },
   sellPrice:   { type: Number, required: true, min: 0 },
   notes:       { type: String, default: '' },
+  isDeleted: { type: Boolean, default: false, index: true },
 }, { timestamps: true });
 
 // Virtual computed fields (available after .toObject({ virtuals: true }))

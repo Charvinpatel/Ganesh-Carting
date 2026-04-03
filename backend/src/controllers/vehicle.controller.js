@@ -6,7 +6,7 @@ import Diesel from '../models/Diesel.model.js';
 export const getVehicles = async (req, res) => {
   try {
     const { search, page = 1, limit = 1000 } = req.query;
-    const filter = {};
+    const filter = { isDeleted: { $ne: true } };
     if (search) {
       filter.number = { $regex: search, $options: 'i' };
     }
@@ -82,7 +82,7 @@ export const updateVehicle = async (req, res) => {
 // DELETE /api/vehicles/:id
 export const deleteVehicle = async (req, res) => {
   try {
-    const vehicle = await Vehicle.findByIdAndDelete(req.params.id);
+    const vehicle = await Vehicle.findByIdAndUpdate(req.params.id, { isDeleted: true }, { new: true });
     if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
     res.json({ message: 'Vehicle deleted successfully' });
   } catch (err) {

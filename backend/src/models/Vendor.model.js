@@ -6,6 +6,7 @@ const vendorSchema = new mongoose.Schema({
   email:   { type: String, default: '' },
   address: { type: String, default: '' },
   notes:   { type: String, default: '' },
+  isDeleted: { type: Boolean, default: false, index: true },
 }, { timestamps: true });
 
 export default mongoose.model('Vendor', vendorSchema);
