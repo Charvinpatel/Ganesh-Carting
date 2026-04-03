@@ -13,7 +13,16 @@ export default function Reports() {
   const soilTypes = useStore(state => state.soilTypes);
   const fetchTrips = useStore(state => state.fetchTrips);
   const fetchDiesel = useStore(state => state.fetchDiesel);
+  const fetchDrivers = useStore(state => state.fetchDrivers);
+  const fetchVehicles = useStore(state => state.fetchVehicles);
+  const fetchSoilTypes = useStore(state => state.fetchSoilTypes);
   const contentLoading = useStore(state => state.contentLoading);
+
+  useEffect(() => {
+    if (drivers.length === 0) fetchDrivers({ limit: 1000 });
+    if (vehicles.length === 0) fetchVehicles({ limit: 1000 });
+    if (soilTypes.length === 0) fetchSoilTypes();
+  }, [drivers.length, vehicles.length, soilTypes.length, fetchDrivers, fetchVehicles, fetchSoilTypes]);
   const [reportType, setReportType] = useState('daily');
   const [filter, setFilter] = useState({
     startDate: dayjs().subtract(30, 'day').format('YYYY-MM-DD'),

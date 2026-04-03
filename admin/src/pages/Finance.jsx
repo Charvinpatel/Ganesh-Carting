@@ -19,7 +19,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function Finance() {
-  const { trips, diesel, soilTypes, vehicles, drivers, fetchTrips, fetchDiesel, contentLoading } = useStore();
+  const { trips, diesel, soilTypes, vehicles, drivers, fetchTrips, fetchDiesel, fetchVehicles, fetchDrivers, fetchSoilTypes, contentLoading } = useStore();
   const [period, setPeriod] = useState('30');
 
   const days = period === '7' ? 7 : period === '30' ? 30 : 90;
@@ -32,7 +32,10 @@ export default function Finance() {
     
     fetchTrips({ from: startStr });
     fetchDiesel({ from: startStr });
-  }, [days, fetchTrips, fetchDiesel]);
+    if (vehicles.length === 0) fetchVehicles({ limit: 1000 });
+    if (drivers.length === 0) fetchDrivers({ limit: 1000 });
+    if (soilTypes.length === 0) fetchSoilTypes();
+  }, [days, fetchTrips, fetchDiesel, fetchVehicles, fetchDrivers, fetchSoilTypes, vehicles.length, drivers.length, soilTypes.length]);
 
   const totalRevenue = trips.reduce((s, t) => s + getTripRevenue(t), 0);
   const totalCost = trips.reduce((s, t) => s + getTripCost(t), 0);

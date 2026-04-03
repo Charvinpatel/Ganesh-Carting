@@ -19,8 +19,15 @@ export default function Diesel() {
   const updateDiesel = useStore(state => state.updateDiesel);
   const deleteDiesel = useStore(state => state.deleteDiesel);
   const drivers = useStore(state => state.drivers);
+  const fetchDrivers = useStore(state => state.fetchDrivers);
   const vehicles = useStore(state => state.vehicles);
+  const fetchVehicles = useStore(state => state.fetchVehicles);
   const loading = useStore(state => state.loading);
+
+  useEffect(() => {
+    if (drivers.length === 0) fetchDrivers({ limit: 1000 });
+    if (vehicles.length === 0) fetchVehicles({ limit: 1000 });
+  }, [drivers.length, vehicles.length, fetchDrivers, fetchVehicles]);
 
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
